@@ -1,0 +1,38 @@
+version: '3.7'
+
+###--------- BEGIN BUILD CONFIG <15.X> ---------###
+x-build-15:
+    &build-15
+    context: ./context/15
+    shm_size: 2GB
+    args:
+        - BASE_IMAGE=mcr.microsoft.com/windows/servercore:ltsc2019
+###--------- END BUILD CONFIG <15.X> ---------###
+
+###--------- BEGIN BUILD CONFIG <16.X> ---------###
+x-build-16:
+    &build-16
+    context: ./context/16
+    shm_size: 2GB
+    args:
+        - BASE_IMAGE=mcr.microsoft.com/windows/servercore:ltsc2019
+###--------- END BUILD CONFIG <16.X> ---------###
+
+services:
+    ###--------- BEGIN TAG CONFIG <latest> ---------###
+    'latest':
+        image: ${REGISTRY_HOST}:${REGISTRY_PORT}/${REGISTRY_NAME}:latest
+        build: *build-16
+    ###--------- END TAG CONFIG <latest> ---------###
+
+    ###--------- BEGIN TAG CONFIG <15.X> ---------###
+    '2017':
+        image: ${REGISTRY_HOST}:${REGISTRY_PORT}/${REGISTRY_NAME}:2017
+        build: *build-15
+    ###--------- END TAG CONFIG <15.X> ---------###
+
+    ###--------- BEGIN TAG CONFIG <15.X> ---------###
+    '2019':
+        image: ${REGISTRY_HOST}:${REGISTRY_PORT}/${REGISTRY_NAME}:2019
+        build: *build-16
+    ###--------- END TAG CONFIG <15.X> ---------###
