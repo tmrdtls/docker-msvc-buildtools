@@ -1,16 +1,11 @@
 # escape=`
 
-# Use the Windows Server Core image
-ARG BASE_IMAGE
-FROM $BASE_IMAGE
+FROM mcr.microsoft.com/windows/servercore:ltsc2019
 
-# Restore the default Windows shell for correct batch processing.
 SHELL ["cmd", "/S", "/C"]
 
 ADD https://aka.ms/vs/15/release/vs_buildtools.exe C:\Temp\vs_buildtools.exe
 
-# Download and install build tools
-# See https://docs.microsoft.com/en-us/visualstudio/install/workload-component-id-vs-build-tools?view=vs-2017#visual-c-build-tools
 RUN C:\Temp\vs_buildtools.exe --quiet --wait --norestart --nocache `
         --installPath C:\VisualStudio `
         --add Microsoft.VisualStudio.Workload.VCTools `
@@ -22,6 +17,5 @@ RUN C:\Temp\vs_buildtools.exe --quiet --wait --norestart --nocache `
         Remove-Item -Force -Recurse "${Env:TEMP}\*"; `
         Remove-Item -Force -Recurse "${Env:windir}\Temp\*"
 
-# This entry point starts the developer command prompt and launches the PowerShell shell.
-ENTRYPOINT ["C:\\VisualStudio\\VC\\Auxiliary\\Build\\vcvarsall.bat", "x64", "&&"]
+ENTRYPOINT ["C:\\VisualStudio\\VC\\Auxiliary\\Build\\vcvarsall.bat", "amd64", "&&"]
 CMD ["powershell.exe", "-NoLogo", "-ExecutionPolicy", "Bypass"]
